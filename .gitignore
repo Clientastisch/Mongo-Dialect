@@ -4,11 +4,15 @@
 # Log file
 *.log
 
-# BlueJ files
-*.ctxt
+# IntelliJ files
+*.iml
+*.kotlin_module
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+# Directories
+.idea/
+Minecraft/
+Inject/
+cache/
 
 # Package Files #
 *.jar
