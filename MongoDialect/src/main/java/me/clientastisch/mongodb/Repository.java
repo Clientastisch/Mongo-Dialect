@@ -7,6 +7,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import me.clientastisch.mongodb.database.DelegateDatabase;
 
 @Accessors(chain = true)
 public class Repository {
@@ -43,6 +44,10 @@ public class Repository {
         client = MongoClients.create(settings);
 
         return this;
+    }
+
+    public void terminate() {
+        client.close();
     }
 
     public DelegateDatabase getDatabase(String database) {
