@@ -6,6 +6,8 @@ import me.clientastisch.mongodb.database.DelegateDatabase;
 import org.bson.Document;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 class RepositoryTest {
 
     @Test
@@ -14,13 +16,14 @@ class RepositoryTest {
                 .setTimeout(10000)
                 .initialize();
 
-        DelegateDatabase database = repository.getDatabase("test");
-        MongoCollection<Document> document = database.createCollection("humans");
+        DelegateDatabase database = repository.getDatabase("my_database");
+        MongoCollection<Document> document = database.createCollection("my_collection");
 
-        document.insertOne(Document.parse("{name: \"Lucas\", age: 15}"));
+        document.insertOne(Document.parse("{name: \"Human\", age: 15}"));
 
         BasicDBObject fields = new BasicDBObject("age", 17);
-        document.find(fields).forEach(var -> System.out.println(var.toJson()));
+
+        assertTrue(document.find(fields).iterator().hasNext());
     }
 
 }
