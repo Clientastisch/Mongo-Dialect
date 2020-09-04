@@ -1,4 +1,4 @@
-package me.clientastisch.mongodb;
+package me.clientastisch.mongodb.database;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
