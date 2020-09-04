@@ -5,6 +5,9 @@ by providing some additional methods, and an easier way to establish connections
 
 ````java
     Repository repository = new Repository("localhost", 27017)
+            .setUsername("root")
+            .setPassword("password")
+            .setTimeout(10000)
             .initialize();
 
     DelegateDatabase database = repository.getDatabase("my_database");
