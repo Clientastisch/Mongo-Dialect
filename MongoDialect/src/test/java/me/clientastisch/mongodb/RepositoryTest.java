@@ -19,7 +19,8 @@ class RepositoryTest {
         DelegateDatabase database = repository.getDatabase("my_database");
         MongoCollection<Document> document = database.createCollection("my_collection");
 
-        document.insertOne(Document.parse("{name: \"Human\", age: 15}"));
+        document.insertOne(Document.parse("{name: \"Human 1\", age: 15}"));
+        document.insertOne(Document.parse("{name: \"Human 2\", age: 17}"));
 
         BasicDBObject fields = new BasicDBObject("age", 17);
 
