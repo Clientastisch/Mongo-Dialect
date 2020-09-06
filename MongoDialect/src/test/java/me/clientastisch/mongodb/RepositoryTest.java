@@ -1,12 +1,8 @@
 package me.clientastisch.mongodb;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.client.MongoCollection;
+import me.clientastisch.mongodb.collection.DelegateCollection;
 import me.clientastisch.mongodb.database.DelegateDatabase;
-import org.bson.Document;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class RepositoryTest {
 
@@ -16,15 +12,15 @@ class RepositoryTest {
                 .setTimeout(10000)
                 .initialize();
 
-        DelegateDatabase database = repository.getDatabase("my_database");
-        MongoCollection<Document> document = database.createCollection("my_collection");
+        DelegateDatabase database = repository.getDatabase("test");
+        DelegateCollection collection = database.createCollection("humans");
 
-        document.insertOne(Document.parse("{name: \"Human 1\", age: 15}"));
-        document.insertOne(Document.parse("{name: \"Human 2\", age: 17}"));
+        collection.insert("{name: \"Name\", age: 15");
+        collection.insert("{name: \"Name\", age: 262");
 
-        BasicDBObject fields = new BasicDBObject("age", 17);
+        collection.find("age", 15).forEach(collection::delete);
 
-        assertTrue(document.find(fields).iterator().hasNext());
+        collection.find("age", 15).forEach(System.out::println);
     }
 
 }
