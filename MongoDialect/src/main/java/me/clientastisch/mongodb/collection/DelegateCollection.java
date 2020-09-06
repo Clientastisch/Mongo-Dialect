@@ -22,6 +22,12 @@ public class DelegateCollection {
         this.mongoCollection = mongoCollection;
     }
 
+    public List<Document> findAll() {
+        List<Document> documents = new LinkedList<>();
+        this.mongoCollection.find(Filters.ne("_id", null)).iterator().forEachRemaining(documents::add);
+        return documents;
+    }
+
     public List<Document> find(String key, Object value) {
         List<Document> documents = new LinkedList<>();
         BasicDBObject filter = new BasicDBObject(key, value);
@@ -43,10 +49,6 @@ public class DelegateCollection {
         this.mongoCollection.insertOne(document);
     }
 
-    public void delete(String json) {
-        this.delete(Document.parse(json));
-    }
-
     public void delete(Document document) {
         this.mongoCollection.deleteOne(document);
     }
@@ -54,6 +56,11 @@ public class DelegateCollection {
     public void update(Document document, String key, Object value) {
         Bson bson = Filters.and(document.entrySet().stream().map(entry -> Filters.eq(entry.getKey(), entry.getValue())).collect(Collectors.toList()));
         this.mongoCollection.updateOne(bson, new Document("$set", new Document(key, value)));
+    }
+
+    public void remove(Document document, String key) {
+        Bson bson = Filters.and(document.entrySet().stream().map(entry -> Filters.eq(entry.getKey(), entry.getValue())).collect(Collectors.toList()));
+        this.mongoCollection.updateOne(bson, new Document("$unset", new Document(key, null)));
     }
 
     public void add(Document document, String key, Object value) {
