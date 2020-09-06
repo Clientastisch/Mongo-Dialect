@@ -3,6 +3,7 @@ package me.clientastisch.mongodb.database;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import lombok.Getter;
+import me.clientastisch.mongodb.collection.DelegateCollection;
 import org.bson.Document;
 
 import java.util.LinkedList;
@@ -17,14 +18,15 @@ public class DelegateDatabase {
         this.mongoDriver = mongoDriver;
     }
 
-    public MongoCollection<Document> createCollection(String collection) {
+    public DelegateCollection createCollection(String collection) {
         if (!listCollectionNames().contains(collection))
             this.mongoDriver.createCollection(collection);
+
         return getCollection(collection);
     }
 
-    public MongoCollection<Document> getCollection(String collection) {
-        return this.mongoDriver.getCollection(collection);
+    public DelegateCollection getCollection(String collection) {
+        return new DelegateCollection(mongoDriver.getCollection(collection));
     }
 
     public List<Document> listCollections() {
