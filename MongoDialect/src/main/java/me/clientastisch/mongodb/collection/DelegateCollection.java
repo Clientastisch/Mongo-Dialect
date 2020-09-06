@@ -56,12 +56,8 @@ public class DelegateCollection {
         this.mongoCollection.updateOne(bson, new Document("$set", new Document(key, value)));
     }
 
-    public long countDocuments(Bson filter, CountOptions options) {
-        return this.mongoCollection.countDocuments(filter, options);
-    }
-
-    public long countDocuments(Bson filter) {
-        return this.mongoCollection.countDocuments(filter);
+    public void add(Document document, String key, Object value) {
+        this.update(document, key, value);
     }
 
     public long countDocuments() {
