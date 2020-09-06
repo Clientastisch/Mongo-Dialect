@@ -41,6 +41,13 @@ public class DelegateCollection {
         return documents;
     }
 
+    public List<Document> find(String key, List<Object> value, Filter filter) {
+        List<Document> documents = new LinkedList<>();
+        Bson bson = Filters.or(value.stream().map(var -> filter.getFiler(key, var)).collect(Collectors.toList()));
+        this.mongoCollection.find(bson).iterator().forEachRemaining(documents::add);
+        return documents;
+    }
+
     public void insert(String json) {
         this.insert(Document.parse(json));
     }
