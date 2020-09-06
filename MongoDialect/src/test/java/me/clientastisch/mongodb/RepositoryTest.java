@@ -15,12 +15,11 @@ class RepositoryTest {
         DelegateDatabase database = repository.getDatabase("test");
         DelegateCollection collection = database.createCollection("humans");
 
-        collection.insert("{name: \"Name\", age: 15");
-        collection.insert("{name: \"Name\", age: 262");
+        collection.find("name", "Fuchs").stream().findFirst().ifPresent(var -> {
+            collection.update(var, "age", -1);
+        });
 
-        collection.find("age", 15).forEach(collection::delete);
-
-        collection.find("age", 15).forEach(System.out::println);
+        System.out.println(collection.countDocuments());
     }
 
 }

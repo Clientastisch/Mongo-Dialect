@@ -3,12 +3,15 @@ package me.clientastisch.mongodb.collection;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.CountOptions;
+import com.mongodb.client.model.Filters;
 import lombok.Getter;
+import me.clientastisch.mongodb.filter.Filter;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public class DelegateCollection {
@@ -23,6 +26,12 @@ public class DelegateCollection {
         List<Document> documents = new LinkedList<>();
         BasicDBObject filter = new BasicDBObject(key, value);
         this.mongoCollection.find(filter).iterator().forEachRemaining(documents::add);
+        return documents;
+    }
+
+    public List<Document> find(String key, Object value, Filter filter) {
+        List<Document> documents = new LinkedList<>();
+        this.mongoCollection.find(filter.getFiler(key, value)).iterator().forEachRemaining(documents::add);
         return documents;
     }
 
@@ -42,11 +51,20 @@ public class DelegateCollection {
         this.mongoCollection.deleteOne(document);
     }
 
+    public void update(Document document, String key, Object value) {
+        Bson bson = Filters.and(document.entrySet().stream().map(entry -> Filters.eq(entry.getKey(), entry.getValue())).collect(Collectors.toList()));
+        this.mongoCollection.updateOne(bson, new Document("$set", new Document(key, value)));
+    }
+
     public long countDocuments(Bson filter, CountOptions options) {
         return this.mongoCollection.countDocuments(filter, options);
     }
 
     public long countDocuments(Bson filter) {
         return this.mongoCollection.countDocuments(filter);
+    }
+
+    public long countDocuments() {
+        return this.mongoCollection.countDocuments();
     }
 }
