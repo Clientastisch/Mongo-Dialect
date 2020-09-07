@@ -2,13 +2,13 @@ package me.clientastisch.mongodb.collection;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.model.CountOptions;
 import com.mongodb.client.model.Filters;
 import lombok.Getter;
 import me.clientastisch.mongodb.filter.Filter;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,21 +29,18 @@ public class DelegateCollection {
     }
 
     public List<Document> find(String key, Object value) {
-        List<Document> documents = new LinkedList<>();
-        BasicDBObject filter = new BasicDBObject(key, value);
-        this.mongoCollection.find(filter).iterator().forEachRemaining(documents::add);
-        return documents;
+        return this.find(Filter.EQUALS, key, value);
     }
 
-    public List<Document> find(String key, Object value, Filter filter) {
+    public List<Document> find(Filter filter, String key, Object value) {
         List<Document> documents = new LinkedList<>();
         this.mongoCollection.find(filter.getFiler(key, value)).iterator().forEachRemaining(documents::add);
         return documents;
     }
 
-    public List<Document> find(String key, List<Object> value, Filter filter) {
+    public List<Document> find(Filter filter, String key, Object... value) {
         List<Document> documents = new LinkedList<>();
-        Bson bson = Filters.or(value.stream().map(var -> filter.getFiler(key, var)).collect(Collectors.toList()));
+        Bson bson = Filters.or(Arrays.stream(value).map(var -> filter.getFiler(key, var)).collect(Collectors.toList()));
         this.mongoCollection.find(bson).iterator().forEachRemaining(documents::add);
         return documents;
     }
@@ -61,17 +58,13 @@ public class DelegateCollection {
     }
 
     public void update(Document document, String key, Object value) {
-        Bson bson = Filters.and(document.entrySet().stream().map(entry -> Filters.eq(entry.getKey(), entry.getValue())).collect(Collectors.toList()));
+        Bson bson = Filters.eq("_id", document.get("_id"));
         this.mongoCollection.updateOne(bson, new Document("$set", new Document(key, value)));
     }
 
     public void remove(Document document, String key) {
-        Bson bson = Filters.and(document.entrySet().stream().map(entry -> Filters.eq(entry.getKey(), entry.getValue())).collect(Collectors.toList()));
+        Bson bson = Filters.eq("_id", document.get("_id"));
         this.mongoCollection.updateOne(bson, new Document("$unset", new Document(key, null)));
-    }
-
-    public void add(Document document, String key, Object value) {
-        this.update(document, key, value);
     }
 
     public long countDocuments() {
