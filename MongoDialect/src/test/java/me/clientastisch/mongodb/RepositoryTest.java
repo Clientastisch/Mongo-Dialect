@@ -3,9 +3,8 @@ package me.clientastisch.mongodb;
 import me.clientastisch.mongodb.collection.DelegateCollection;
 import me.clientastisch.mongodb.database.DelegateDatabase;
 import me.clientastisch.mongodb.filter.Filter;
+import org.bson.Document;
 import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
 
 class RepositoryTest {
 
@@ -18,19 +17,22 @@ class RepositoryTest {
         DelegateDatabase database = repository.getDatabase("test");
         DelegateCollection collection = database.createCollection("humans");
 
-        collection.find("name", "Fuchs").stream().findFirst().ifPresent(var -> {
-            collection.update(var, "age", 4);
+//        collection.insert(new Document("value", 1)
+//                .append("list", new Document("var1", 1)
+//                        .append("var2", 2)
+//                        .append("var3", 3)
+//                )
+//        );
+
+        collection.find("name", "Fuchs").stream().findFirst().ifPresent(document -> {
+            collection.update(document, "age", 4);
         });
 
-//        collection.findAll().stream().filter(var -> var.containsKey("age")).forEach(var -> {
-//            collection.update(var, "age", (int) var.get("age") * 2);
+        collection.find(Filter.EQUALS, "age", 1, 2, 3, 4).forEach(System.out::println);
+
+//        collection.find("value", 1).stream().findFirst().ifPresent(document -> {
+//            collection.update(document, "list", ((Document) document.get("list")).append("var6", 6));
 //        });
-
-        collection.find("age", Arrays.asList(8, 4, 12, 2), Filter.UNEQUAL).stream().findFirst().ifPresent(var -> {
-            System.out.println(var.get("name"));
-        });
-
-        collection.findAll().forEach(System.out::println);
     }
 
 }
