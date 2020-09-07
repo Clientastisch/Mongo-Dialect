@@ -13,7 +13,7 @@ Repository repository = new Repository("localhost", 27017)
 DelegateDatabase database = repository.getDatabase("my_database");
 DelegateCollection collection = database.createCollection("my_collection");
 
-collection.insert("{name: \"Name\", age: 15");
+collection.insert("{name: \"Name\", age: 15}");
 
 collection.find("name", "Human").stream().findFirst().ifPresent(var -> {
     collection.update(var, "age", -1);
