@@ -28,6 +28,12 @@ public class DelegateCollection {
         return documents;
     }
 
+    public List<Document> find(String key, boolean exists) {
+        List<Document> documents = new LinkedList<>();
+        this.mongoCollection.find(Filters.exists(key, exists)).iterator().forEachRemaining(documents::add);
+        return documents;
+    }
+
     public List<Document> find(String key, Object value) {
         return this.find(Filter.EQUALS, key, value);
     }
