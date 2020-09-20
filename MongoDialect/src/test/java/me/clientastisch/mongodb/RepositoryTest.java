@@ -2,7 +2,6 @@ package me.clientastisch.mongodb;
 
 import me.clientastisch.mongodb.collection.DelegateCollection;
 import me.clientastisch.mongodb.database.DelegateDatabase;
-import me.clientastisch.mongodb.filter.Filter;
 import org.bson.Document;
 import org.junit.jupiter.api.Test;
 
