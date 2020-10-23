@@ -17,7 +17,8 @@ class RepositoryTest {
         DelegateCollection collection = database.createCollection("humans");
 
         collection.insert(new Document("age", 1));
-
         collection.find(Filter.EQUALS, "age", 1, 2, 3, 4).forEach(System.out::println);
+
+        repository.terminate();
     }
 }
