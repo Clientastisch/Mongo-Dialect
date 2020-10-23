@@ -9,6 +9,8 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import me.clientastisch.mongodb.database.DelegateDatabase;
 
+import java.util.Optional;
+
 @Accessors(chain = true)
 public class Repository {
 
@@ -16,25 +18,25 @@ public class Repository {
     private MongoClient client;
 
     @Setter private String username, password, name;
-    @Setter private long timeout;
 
     private final String host;
     private final int port;
 
     public Repository(String host, int port) {
-        this.timeout = Integer.MAX_VALUE;
         this.host = host;
         this.port = port;
     }
 
     public Repository initialize() {
         ConnectionString connection = new ConnectionString(
-                String.format("mongodb://%s%s%s:%s/?maxTimeMS=%s",
-                        username != null ? username + ":" : "",
-                        password != null ? password + "@" : "",
-                        host, port, timeout
-                )
+                String.format("mongodb://%s:%s@%s:%s/",
+                        Optional.ofNullable(username).orElse(""),
+                        Optional.ofNullable(password).orElse(""),
+                        host, port
+                ).replace(":@", "")
         );
+
+        System.out.println(connection.getConnectionString());
 
         settings = MongoClientSettings.builder()
                 .applyConnectionString(connection)
